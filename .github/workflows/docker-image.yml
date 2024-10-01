@@ -77,7 +77,7 @@ jobs:
           else
             # Filter out any non-version tags like 'latest' and sort correctly
             SORTED_TAGS=$(echo "$TAGS" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -t. -k1,1nr -k2,2nr -k3,3nr)
-            LATEST_TAG=$(echo "$SORTED_TAGS" | tail -n1)
+            LATEST_TAG=$(echo "$SORTED_TAGS" | head -n1)
             echo "Latest tag is $LATEST_TAG"
       
             IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
