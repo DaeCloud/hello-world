@@ -56,8 +56,8 @@ jobs:
             echo "Image not found: $IMAGE_NAME"
             TAGS="[]"
           else
-            TAGS=$(echo "$RESPONSE" | jq -r '.tags[]')
-            if [ -z "$TAGS" ]; then
+            TAGS=$(echo "$RESPONSE" | jq -r '.tags[]' || echo "null")
+            if [ "$TAGS" = "null" ] || [ -z "$TAGS" ]; then
               echo "No tags found for image: $IMAGE_NAME"
               TAGS="[]"
             fi
@@ -66,8 +66,6 @@ jobs:
           echo "::set-output name=tags::$TAGS"
         env:
           REGISTRY_URL: ${{ vars.REGISTRY_URL }}
-
-
 
       - name: Determine next tag
         id: next_tag
