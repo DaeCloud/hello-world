@@ -65,8 +65,8 @@ jobs:
           if [ -z "$TAGS" ]; then
             NEXT_TAG="1.0.0"
           else
-            # Filter out any non-version tags like 'latest' and sort correctly
-            SORTED_TAGS=$(echo "$TAGS" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -t. -k1,1n -k2,2n -k3,3n)
+            # Filter out non-version tags like 'latest' and sort them correctly
+            SORTED_TAGS=$(echo "$TAGS" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V)
             LATEST_TAG=$(echo "$SORTED_TAGS" | tail -n1)
             echo "Latest tag is $LATEST_TAG"
       
@@ -95,7 +95,7 @@ jobs:
             NEXT_TAG="${MAJOR}.${MINOR}.${PATCH}"
           fi
           echo "Next tag is $NEXT_TAG"
-          echo "::set-output name=tag::$NEXT_TAG"
+          echo "tag=$NEXT_TAG" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
