@@ -65,11 +65,13 @@ jobs:
           if [ -z "$TAGS" ]; then
             NEXT_TAG="1.0.0"
           else
-            LATEST_TAG=$(echo "$TAGS" | sort -V | tail -n1)
+            # Filter out any non-version tags like 'latest' and sort correctly
+            SORTED_TAGS=$(echo "$TAGS" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -t. -k1,1n -k2,2n -k3,3n)
+            LATEST_TAG=$(echo "$SORTED_TAGS" | tail -n1)
             echo "Latest tag is $LATEST_TAG"
-
+      
             IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
-
+      
             VERSION_TYPE="${{ github.event.inputs.version_type }}"
             case $VERSION_TYPE in
               PATCH)
@@ -89,7 +91,7 @@ jobs:
                 exit 1
                 ;;
             esac
-
+      
             NEXT_TAG="${MAJOR}.${MINOR}.${PATCH}"
           fi
           echo "Next tag is $NEXT_TAG"
