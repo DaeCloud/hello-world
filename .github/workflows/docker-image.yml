@@ -51,7 +51,7 @@ jobs:
         run: |
           echo "Determining the next tag..."
           IMAGE_NAME="${{ steps.determine_image_name.outputs.image_name }}"
-          LATEST_TAG=$(curl -s -u ${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }} https://${{ secrets.NEXT_IMAGE }}/$IMAGE_NAME)
+          LATEST_TAG=$(curl -s -u ${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }} https://${{ secrets.NEXT_TAG }}/$IMAGE_NAME)
           if [ "$LATEST_TAG" = "" ]; then
             NEXT_TAG="1.0.0"
           else
