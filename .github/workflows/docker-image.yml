@@ -51,11 +51,18 @@ jobs:
         run: |
           echo "Fetching tags from registry..."
           IMAGE_NAME="${{ steps.determine_image_name.outputs.image_name }}"
-          TAGS=$(curl -s -u ${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }} https://${{ vars.REGISTRY_URL }}/v2/$IMAGE_NAME/tags/list | jq -r '.tags[]')
+          RESPONSE=$(curl -s -u ${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }} https://${{ vars.REGISTRY_URL }}/v2/$IMAGE_NAME/tags/list)
+          if echo "$RESPONSE" | jq -e '.errors[0].code == "NAME_UNKNOWN"' > /dev/null; then
+            echo "Image not found: $IMAGE_NAME"
+            TAGS="[]"
+          else
+            TAGS=$(echo "$RESPONSE" | jq -r '.tags[]')
+          fi
           echo "Tags fetched: $TAGS"
           echo "::set-output name=tags::$TAGS"
         env:
           REGISTRY_URL: ${{ vars.REGISTRY_URL }}
+
 
       - name: Determine next tag
         id: next_tag
