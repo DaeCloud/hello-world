@@ -51,7 +51,7 @@ jobs:
         run: |
           echo "Fetching tags from registry..."
           IMAGE_NAME="${{ steps.determine_image_name.outputs.image_name }}"
-          TAGS=$(curl -s https://${{ vars.REGISTRY_URL }}/v2/$IMAGE_NAME/tags/list | jq -r '.tags[]')
+          TAGS=$(curl -s -u ${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }} https://${{ vars.REGISTRY_URL }}/v2/$IMAGE_NAME/tags/list | jq -r '.tags[]')
           echo "Tags fetched: $TAGS"
           echo "::set-output name=tags::$TAGS"
         env:
