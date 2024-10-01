@@ -72,7 +72,7 @@ jobs:
         run: |
           echo "Determining the next tag..."
           TAGS="${{ steps.get_tags.outputs.tags }}"
-          if [ -z "$TAGS" ]; then
+          if [ "$TAGS" = "[]" ] || [ -z "$TAGS" ]; then
             NEXT_TAG="1.0.0"
           else
             # Filter out any non-version tags like 'latest' and sort correctly
